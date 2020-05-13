@@ -11,6 +11,7 @@ new Vue({
     todo: [],
     working: [],
     done: [],
+    new_todo: null,
     status_dict: {
       'todo': 0,
       'working': 1,
@@ -88,7 +89,14 @@ new Vue({
         this.boardGrid.refreshItems().layout();
       }.bind(this));
       this.columnGrids.push(grid);
-    }
+    },
+
+    create_task: function() {
+      var body = this.new_todo.trim();
+      if (body !== '') {
+        axios.post('/api/v1/task', { 'body': body });
+      }
+    },
   },
 })
 
