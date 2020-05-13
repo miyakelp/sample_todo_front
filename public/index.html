@@ -2,11 +2,33 @@
 <html>
   <head>
     <meta charset="utf-8">
+     <link rel="stylesheet" type="text/css" href="main.css">
     <title>Vue app</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script src="bundle.js"></script>
+    <div id="app">
+      <div class="board">
+        <div class="board-column todo">
+          <div class="board-column-header">TODO</div>
+          <div id="todo" class="board-column-content">
+            <div v-for="task in todo" :id=task.id class="board-item"><div class="board-item-content"> {{ task.body }} </div></div>
+          </div>
+        </div>
+        <div class="board-column working">
+          <div class="board-column-header">WORKING</div>
+          <div id="working" class="board-column-content">
+            <div v-for="task in working" :id=task.id class="board-item"><div class="board-item-content"> {{ task.body }} </div></div>
+          </div>
+        </div>
+        <div class="board-column done">
+          <div class="board-column-header">DONE</div>
+          <div id="done" class="board-column-content">
+            <div v-for="task in done" :id=task.id class="board-item"><div class="board-item-content"> {{ task.body }} </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
+  <script src="bundle.js"></script>
 </html>
 
