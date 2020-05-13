@@ -2,8 +2,6 @@ import Vue from 'vue';
 import axios from 'axios';
 import Muuri from 'muuri';
 
-import App from './components/App';
-
 new Vue({
   el: '#app',
   data: {
