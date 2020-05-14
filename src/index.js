@@ -2,15 +2,15 @@ import Vue from 'vue';
 import axios from 'axios';
 import Muuri from 'muuri';
 
+import Task from './components/Task'
+
 new Vue({
   el: '#app',
+  components: { Task },
   data: {
     itemContainers: [].slice.call(document.querySelectorAll('.board-column-content')),
     columnGrids: [],
     boardGrid: null,
-    todo: [],
-    working: [],
-    done: [],
     new_todo: null,
     status_dict: {
       'todo': 0,
@@ -18,8 +18,8 @@ new Vue({
       'done': 2,
     },
   },
+
   mounted: function() {
-    // 初期ロード以外Vueをガン無視しているので良い子は真似しないでね
     this.boardGrid = new Muuri('.board', {
       layoutDuration: 400,
       layoutEasing: 'ease',
@@ -32,25 +32,37 @@ new Vue({
       dragReleaseEasing: 'ease'
     });
     axios.get('/api/v1/tasks?status=0').then(function(response) {
-      this.todo = response.data.tasks;
-      this.$nextTick(function() {
-        this.refresh('todo');
-      });
+      this.initList('todo', response.data.tasks);
     }.bind(this));
     axios.get('/api/v1/tasks?status=1').then(function(response) {
-      this.working = response.data.tasks;
-      this.$nextTick(function() {
-        this.refresh('working');
-      });
+      this.initList('working', response.data.tasks);
     }.bind(this));
     axios.get('/api/v1/tasks?status=2').then(function(response) {
-      this.done = response.data.tasks;
-      this.$nextTick(function() {
-        this.refresh('done');
-      });
+      this.initList('done', response.data.tasks);
     }.bind(this));
   },
+
   methods: {
+    add: function(list, id, body) {
+        let c = Vue.extend(Task);
+        let instance = new c({
+          propsData: {
+            task_id: id,
+            task_body: body,
+          }
+        }).$mount();
+        document.getElementById(list).appendChild(instance.$el);
+    },
+
+    initList: function(name, tasks) {
+      for (const task of tasks) {
+        this.add(name, task.id, task.body);
+      }
+      this.$nextTick(function() {
+        this.refresh(name);
+      });
+    },
+
     refresh: function(id) {
       var container = document.getElementById(id);
       var grid = new Muuri(container, {
@@ -94,7 +106,13 @@ new Vue({
     create_task: function() {
       var body = this.new_todo.trim();
       if (body !== '') {
-        axios.post('/api/v1/task', { 'body': body });
+        axios.post('/api/v1/task', { 'body': body }).then(function(response) {
+          let task = response.data.task;
+          this.add('todo', task.id, task.body);
+          this.$nextTick(function() {
+            this.refresh('todo');
+          });
+        }.bind(this));
       }
     },
   },
