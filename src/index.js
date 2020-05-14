@@ -11,8 +11,9 @@ new Vue({
     itemContainers: [].slice.call(document.querySelectorAll('.board-column-content')),
     columnGrids: [],
     boardGrid: null,
-    new_todo: null,
-    status_dict: {
+    newTodo: null,
+    errorFlag: false,
+    statusDict: {
       'todo': 0,
       'working': 1,
       'done': 2,
@@ -47,8 +48,8 @@ new Vue({
         let c = Vue.extend(Task);
         let instance = new c({
           propsData: {
-            task_id: id,
-            task_body: body,
+            taskId: id,
+            taskBody: body,
           }
         }).$mount();
         document.getElementById(list).appendChild(instance.$el);
@@ -90,12 +91,20 @@ new Vue({
         }.bind(this));
       }.bind(this))
       .on('receive', function(data) {
-        var task_id = data.item.getElement().id;
+        if (this.errorFlag) {
+          this.errorFlag = false;
+          return;
+        }
+        var taskId = data.item.getElement().id;
         var params = {
-          'before': this.status_dict[data.fromGrid.getElement().id],
-          'after': this.status_dict[data.toGrid.getElement().id],
+          'before': this.statusDict[data.fromGrid.getElement().id],
+          'after': this.statusDict[data.toGrid.getElement().id],
         };
-        axios.post('/api/v1/tasks/' + task_id, params);
+        axios.post('/api/v1/tasks/' + taskId, params).catch(function(err) {
+          this.errorFlag = true;
+          data.toGrid.send(data.toIndex, data.fromGrid, data.fromIndex);
+          alert('他人が更新している，または通信エラーです。');
+        }.bind(this));
       }.bind(this))
       .on('layoutStart', function () {
         this.boardGrid.refreshItems().layout();
@@ -103,8 +112,8 @@ new Vue({
       this.columnGrids.push(grid);
     },
 
-    create_task: function() {
-      var body = this.new_todo.trim();
+    createTask: function() {
+      var body = this.newTodo.trim();
       if (body !== '') {
         axios.post('/api/v1/task', { 'body': body }).then(function(response) {
           let task = response.data.task;
