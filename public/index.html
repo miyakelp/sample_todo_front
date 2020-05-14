@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="utf-8">
      <link rel="stylesheet" type="text/css" href="main.css">
-    <title>Vue app</title>
+    <title>Sample TODO kanban</title>
   </head>
   <body>
     <div id="app">
-      <input class="input" v-model="newTodo" placeholder="TODOを入力してください">
-      <button v-on:click="createTask">追加</button>
+      <div class="todoform">
+        <input class="input" v-model="newTodo" placeholder="TODOを入力してください">
+        <button v-on:click="createTask">TODO追加</button>
+      </div>
       <div class="board">
         <div class="board-column todo">
           <div class="board-column-header">TODO</div>

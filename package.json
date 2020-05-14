@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --hot"
+    "start": "webpack-dev-server --hot",
+    "build": "webpack -p"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "style-loader": "^1.2.1",
     "vue-loader": "^15.9.2",

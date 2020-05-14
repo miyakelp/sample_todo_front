@@ -1,6 +1,7 @@
 const path = require('path')
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
@@ -35,6 +36,6 @@ module.exports = {
     },
   },
 
-  plugins: [new VueLoaderPlugin()]
+  plugins: [new VueLoaderPlugin(), new CopyPlugin([{ from: './public' }])]
 }
 
