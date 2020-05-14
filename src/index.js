@@ -1,8 +1,4 @@
 /*
-Copyright (c) Niklas Rämö
-Released under the MIT license
-http://opensource.org/licenses/mit-license.php
-
 Copyright (c) Shota Takizawa
 Released under the MIT license
 http://opensource.org/licenses/mit-license.php
